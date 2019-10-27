@@ -27,6 +27,7 @@ void buffer_swap(context *ctx);
 void plot_pixel(context *ctx, uint32_t color, int x, int y);
 void draw_horizontal_line(context *ctx, uint32_t color, int x1, int x2, int y);
 void draw_vertical_line(context *ctx, uint32_t color, int y1, int y2, int x);
+void draw_line(context *ctx, uint32_t color, int x1, int y1, int x2, int y2);
 void fill_rect(context *ctx, uint32_t color, int x, int y, int width, int height);
 void clear_context(context *ctx);
 void destroy_context(context *ctx);

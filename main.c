@@ -78,6 +78,7 @@ int main(int argc, char **argv){
     plot_pixel(&ctx, 0xffffffff, 1820, 980);
     fill_rect(&ctx, 0xffff0000, x, y, 30, 30);
     draw_horizontal_line(&ctx, 0xff00ff00, 700, 1000, 600);
+    draw_line(&ctx, 0xffff0000, 70, 500, 700, 50);
     buffer_swap(&ctx);
   }
 
