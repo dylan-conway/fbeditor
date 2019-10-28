@@ -3,11 +3,11 @@ CC = gcc
 TARGET = main
 
 run:
-	$(CC) -o $(TARGET) $(TARGET).c context.c
+	$(CC) -o $(TARGET) $(TARGET).c context.c fb_objects.c
 	sudo ./$(TARGET)
 
 check:
-	$(CC) -o $(TARGET) $(TARGET).c context.c
+	$(CC) -o $(TARGET) $(TARGET).c context.c fb_objects.c
 	sudo valgrind --leak-check=full --show-leak-kinds=all ./$(TARGET)
 
 clean:

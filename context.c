@@ -16,7 +16,7 @@ void sig_handler(int sig){
   }
 }
 
-void create_context(context *ctx){
+void create_context(Context *ctx){
 
   // catch signals
   if(signal(SIGINT, sig_handler) == SIG_ERR){
@@ -105,30 +105,30 @@ void create_context(context *ctx){
   ctx->running = running;
 }
 
-void buffer_swap(context *ctx){
+void blip(Context *ctx){
   memcpy(ctx->f_buffer, ctx->d_buffer, ctx->xres * ctx->yres * (ctx->bpp / 8));
 }
 
-void plot_pixel(context *ctx, uint32_t color, int x, int y){
+void plot_pixel(Context *ctx, uint32_t color, int x, int y){
   int index = x + (y * ctx->xres);
   *(ctx->d_buffer + index) = color;
 }
 
-void draw_horizontal_line(context *ctx, uint32_t color, int x1, int x2, int y){
+void draw_horizontal_line(Context *ctx, uint32_t color, int x1, int x2, int y){
   int index;
   for(int i = x1; i < x2; i ++){
     plot_pixel(ctx, color, i, y);
   }
 }
 
-void draw_vertical_line(context *ctx, uint32_t color, int y1, int y2, int x){
+void draw_vertical_line(Context *ctx, uint32_t color, int y1, int y2, int x){
   int index;
   for(int j = y1; j < y2; j ++){
     plot_pixel(ctx, color, x, j);
   }
 }
 
-void draw_line(context *ctx, uint32_t color, int x1, int y1, int x2, int y2){
+void draw_line(Context *ctx, uint32_t color, int x1, int y1, int x2, int y2){
   int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py;
   dx = x2 - x1;
   dy = y2 - y1;
@@ -164,7 +164,7 @@ void draw_line(context *ctx, uint32_t color, int x1, int y1, int x2, int y2){
   }
 }
 
-void fill_rect(context *ctx, uint32_t color, int x, int y, int width, int height){
+void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height){
   int index;
   for(int i = 0; i < width; i ++){
     index = (x + i) + (y * ctx->xres);
@@ -178,11 +178,11 @@ void fill_rect(context *ctx, uint32_t color, int x, int y, int width, int height
   }
 }
 
-void clear_context(context *ctx){
+void clear_context(Context *ctx){
   memset(ctx->d_buffer, 0, ctx->xres * ctx->yres * (ctx->bpp / 8));
 }
 
-void destroy_context(context *ctx){
+void destroy_context(Context *ctx){
   if(munmap(ctx->f_buffer, ctx->xres * ctx->yres * (ctx->bpp / 8)) == -1){
     perror("Failed to unmap frame buffer memory");
   }
