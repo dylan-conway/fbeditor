@@ -1,7 +1,47 @@
 
 #include "context.h"
 
+int ttyfd = -1;
+
+void sig_handler(int sig){
+  if(sig == SIGINT){
+    printf("\nExiting...\n");
+    ioctl(ttyfd, KDSETMODE, KD_TEXT);
+    exit(EXIT_SUCCESS);
+  }
+  if(sig == SIGSEGV){
+    ioctl(ttyfd, KDSETMODE, KD_TEXT);
+    fprintf(stderr, "SEG FAULT\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
 void create_context(context *ctx){
+
+  // catch signals
+  if(signal(SIGINT, sig_handler) == SIG_ERR){
+    perror("Can't catch SIGINT");
+  }
+  if(signal(SIGSEGV, sig_handler) == SIG_ERR){
+    perror("Can't catch SIGSEGV");
+  }
+
+  // open the current tty and change to graphics mode
+  char *current_tty = ttyname(STDIN_FILENO);
+  if(current_tty == NULL){
+    perror("Failed to get current tty");
+    exit(EXIT_FAILURE);
+  }
+  ttyfd = open(current_tty, O_RDWR);
+  if(ttyfd == -1){
+    perror("Failed to open current tty");
+    exit(EXIT_FAILURE);
+  }else{
+    if(ioctl(ttyfd, KDSETMODE, KD_GRAPHICS) == -1){
+      perror("Failed to set graphics mode");
+      // exit(EXIT_FAILURE);
+    };
+  }
 
   int fd, xres, yres;
   uint32_t *f_buffer, *d_buffer;
@@ -9,6 +49,7 @@ void create_context(context *ctx){
   struct fb_fix_screeninfo finfo;
 
   int bpp = 32;
+  int running = 1;
 
   fd = open("/dev/fb0", O_RDWR);
   if(fd == -1){
@@ -61,6 +102,7 @@ void create_context(context *ctx){
   ctx->vinfo = vinfo;
   ctx->f_buffer = f_buffer;
   ctx->d_buffer = d_buffer;
+  ctx->running = running;
 }
 
 void buffer_swap(context *ctx){
@@ -136,6 +178,10 @@ void fill_rect(context *ctx, uint32_t color, int x, int y, int width, int height
   }
 }
 
+void clear_context(context *ctx){
+  memset(ctx->d_buffer, 0, ctx->xres * ctx->yres * (ctx->bpp / 8));
+}
+
 void destroy_context(context *ctx){
   if(munmap(ctx->f_buffer, ctx->xres * ctx->yres * (ctx->bpp / 8)) == -1){
     perror("Failed to unmap frame buffer memory");
@@ -146,4 +192,8 @@ void destroy_context(context *ctx){
   if(close(ctx->fd) == -1){
     perror("Failed to close fb0");
   };
+  if(ioctl(ttyfd, KDSETMODE, KD_TEXT) == -1){
+    perror("Failed to set text mode");
+  }
+  close(ttyfd);
 }

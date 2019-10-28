@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <signal.h>
 #include <linux/fb.h>
 #include <linux/kd.h>
 #include <stdint.h>
@@ -20,6 +21,7 @@ typedef struct {
   struct fb_fix_screeninfo finfo;
   int fd;
   int bpp;
+  int running;
 } context;
 
 void create_context(context *ctx);
