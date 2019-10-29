@@ -2,6 +2,12 @@
 #define FB_OBJECTS_H
 
 #include "context.h"
+#include "image.h"
+
+// struct fb_img{
+//   int xres, yres;
+//   uint32_t *data;
+// };
 
 typedef struct{
   int x, y, vx, vy;
@@ -16,11 +22,12 @@ typedef struct{
   int x, y, vx, vy;
   int width, height;
   int health, level;
-  uint32_t color;
+  StaticSprite sprite;
 } Player;
 void Player_init(Player *p);
 void Player_update(Context *ctx, Player *p);
 void Player_render(Context *ctx, Player *p);
+void Player_deallocate(Player *p);
 
 typedef struct{
   int x1, y1, x2, y2, x3, y3;

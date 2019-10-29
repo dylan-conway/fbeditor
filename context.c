@@ -5,9 +5,7 @@ int ttyfd = -1;
 
 void sig_handler(int sig){
   if(sig == SIGINT){
-    printf("\nExiting...\n");
-    ioctl(ttyfd, KDSETMODE, KD_TEXT);
-    exit(EXIT_SUCCESS);
+    printf("\nDON'T EXIT WITH CTRL+C\n");
   }
   if(sig == SIGSEGV){
     ioctl(ttyfd, KDSETMODE, KD_TEXT);
@@ -193,15 +191,24 @@ void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius){
   // }
 }
 
+void draw_fb_img(Context *ctx, struct fb_img img, int x, int y){
+  int src_index, dest_index;
+  for(int j = 0; j < img.yres; j++){
+    src_index = j * img.xres;
+    dest_index = x + ((y + j) * ctx->xres);
+    memcpy(ctx->d_buffer + dest_index, img.data + src_index, img.xres * (ctx->bpp / 8));
+  }
+}
+
 void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height){
   int index;
-  for(int i = 0; i < width; i ++){
+  for(int i = 0; i < width; i++){
     index = (x + i) + (y * ctx->xres);
     *(ctx->d_buffer + index) = color;
   }
   int dest_index;
   int src_index = x + (y * ctx->xres);
-  for(int j = 1; j < height; j ++){
+  for(int j = 1; j < height; j++){
     dest_index = x + ((y + j) * ctx->xres);
     memcpy(ctx->d_buffer + dest_index, ctx->d_buffer + src_index, width * (ctx->bpp / 8));
   }

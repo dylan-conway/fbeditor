@@ -15,6 +15,13 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
+#include "image.h"
+
+// struct fb_img{
+//   int xres, yres;
+//   uint32_t *data;
+// };
+
 typedef struct{
   int xres;
   int yres;
@@ -34,6 +41,7 @@ void draw_horizontal_line(Context *ctx, uint32_t color, int x1, int x2, int y);
 void draw_vertical_line(Context *ctx, uint32_t color, int y1, int y2, int x);
 void draw_line(Context *ctx, uint32_t color, int x1, int y1, int x2, int y2);
 void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius);
+void draw_fb_img(Context *ctx, struct fb_img img, int x, int y);
 void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height);
 void clear_context(Context *ctx);
 void destroy_context(Context *ctx);

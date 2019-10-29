@@ -6,9 +6,9 @@ void Box_init(Box *b){
   b->y = 500;
   b->vx = 1;
   b->vy = 1;
-  b->width = 60;
-  b->height = 60;
-  b->color = 0xff0000ff;
+  b->width = 32;
+  b->height = 32;
+  b->color = 0x000000ff;
 }
 void Box_update(Context *ctx, Box *b){
   b->x += b->vx;
@@ -32,6 +32,26 @@ void Box_update(Context *ctx, Box *b){
 }
 void Box_render(Context *ctx, Box *b){
   fill_rect(ctx, b->color, b->x, b->y, b->width, b->height);
+}
+
+void Player_init(Player *p){
+  p->x = 150;
+  p->y = 1000;
+  p->width = 32;
+  p->height = 32;
+  p->vx = 0;
+  p->vy = 0;
+  p->health = 100;
+  p->level = 1;
+  StaticSprite_init(&p->sprite, "images/character_sprite.bmp");
+}
+void Player_update(Context *ctx, Player *p);
+void Player_render(Context *ctx, Player *p){
+  // StaticSprite_render(ctx, &p->sprite, p->x, p->y);
+  draw_fb_img(ctx, p->sprite.img, p->x, p->y);
+}
+void Player_deallocate(Player *p){
+  StaticSprite_deallocate(&p->sprite);
 }
 
 void ShiftingTriangle_init(ShiftingTriangle *t){

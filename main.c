@@ -7,6 +7,7 @@
 
 #include "context.h"
 #include "fb_objects.h"
+#include "image.h"
 
 enum input_command{
   UP, RIGHT, DOWN, LEFT,
@@ -34,6 +35,9 @@ int main(int argc, char **argv){
   }
 
   // initialize objects
+  Player p;
+  Player_init(&p);
+
   Box box;
   Box_init(&box);
 
@@ -63,6 +67,7 @@ int main(int argc, char **argv){
     clear_context(&ctx);
     Box_render(&ctx, &box);
     ShiftingTriangle_render(&ctx, &triangle);
+    Player_render(&ctx, &p);
     blit(&ctx);
     
     // sleep
@@ -70,6 +75,7 @@ int main(int argc, char **argv){
   }
 
   // clean up
+  Player_deallocate(&p);
   destroy_context(&ctx);
 
   return 0;
