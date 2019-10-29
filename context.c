@@ -105,7 +105,7 @@ void create_context(Context *ctx){
   ctx->running = running;
 }
 
-void blip(Context *ctx){
+void blit(Context *ctx){
   memcpy(ctx->f_buffer, ctx->d_buffer, ctx->xres * ctx->yres * (ctx->bpp / 8));
 }
 
@@ -164,6 +164,35 @@ void draw_line(Context *ctx, uint32_t color, int x1, int y1, int x2, int y2){
   }
 }
 
+void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius){
+  // inline void plot4pixels(uint32_t color, int cx, int cy, int x, int y){
+  //   plot_pixel(ctx, color, cx + x, cy + y);
+  //   plot_pixel(ctx, color, cx - x, cy + y);
+  //   plot_pixel(ctx, color, cx + x, cy - y);
+  //   plot_pixel(ctx, color, cx - x, cy - y);
+  // }
+  // inline void plot8pixels(uint32_t color, int cx, int cy, int x, int y){ 
+  //   plot4pixels(color, cx, cy, x, y);
+  //   plot4pixels(color, cx, cy, y, x);
+  // }
+
+  // int error = -radius;
+  // int x = radius;
+  // int y = 0;
+
+  // while(x >= y){
+  //   plot8pixels(color, cx, cy, x, y);
+  //   error += y;
+  //   y++;
+  //   error += y;
+  //   if(error >= 0){
+  //     error += -x;
+  //     x--;
+  //     error += -x;
+  //   }
+  // }
+}
+
 void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height){
   int index;
   for(int i = 0; i < width; i ++){
@@ -179,7 +208,7 @@ void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height
 }
 
 void clear_context(Context *ctx){
-  memset(ctx->d_buffer, 0, ctx->xres * ctx->yres * (ctx->bpp / 8));
+  memset(ctx->d_buffer, 0xff000000, ctx->xres * ctx->yres * (ctx->bpp / 8));
 }
 
 void destroy_context(Context *ctx){

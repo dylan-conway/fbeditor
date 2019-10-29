@@ -28,11 +28,12 @@ typedef struct{
 } Context;
 
 void create_context(Context *ctx);
-void blip(Context *ctx);
+void blit(Context *ctx);
 void plot_pixel(Context *ctx, uint32_t color, int x, int y);
 void draw_horizontal_line(Context *ctx, uint32_t color, int x1, int x2, int y);
 void draw_vertical_line(Context *ctx, uint32_t color, int y1, int y2, int x);
 void draw_line(Context *ctx, uint32_t color, int x1, int y1, int x2, int y2);
+void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius);
 void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height);
 void clear_context(Context *ctx);
 void destroy_context(Context *ctx);

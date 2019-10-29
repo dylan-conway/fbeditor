@@ -4,10 +4,10 @@
 void Box_init(Box *b){
   b->x = 500;
   b->y = 500;
-  b->vx = 5;
-  b->vy = 5;
-  b->width = 55;
-  b->height = 7;
+  b->vx = 1;
+  b->vy = 1;
+  b->width = 60;
+  b->height = 60;
   b->color = 0xff0000ff;
 }
 void Box_update(Context *ctx, Box *b){
@@ -41,15 +41,15 @@ void ShiftingTriangle_init(ShiftingTriangle *t){
   t->y2 = 600;
   t->x3 = 700;
   t->y3 = 1000;
-  t->vx1 = -3;
-  t->vy1 = 3;
-  t->vx2 = 2;
-  t->vy2 = 2;
-  t->vx3 = 1;
-  t->vy3 = -1;
-  t->color1 = 0xffff0000;
+  t->vx1 = -10;
+  t->vy1 = 10;
+  t->vx2 = 10;
+  t->vy2 = 10;
+  t->vx3 = 10;
+  t->vy3 = -10;
+  t->color1 = 0xff00ff00;
   t->color2 = 0xff00ff00;
-  t->color3 = 0xff0000ff;
+  t->color3 = 0xff00ff00;
 }
 void ShiftingTriangle_update(Context *ctx, ShiftingTriangle *t){
   t->x1 += t->vx1;
