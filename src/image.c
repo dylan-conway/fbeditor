@@ -1,5 +1,5 @@
 
-#include "image.h"
+#include "ctx.h"
 
 void StaticSprite_init(StaticSprite *s, char *filename){
 

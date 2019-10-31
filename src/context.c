@@ -1,5 +1,5 @@
 
-#include "context.h"
+#include "ctx.h"
 
 int ttyfd = -1;
 
@@ -190,7 +190,7 @@ void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius){
   // }
 }
 
-void draw_fb_img(Context *ctx, struct fb_img img, int x, int y){
+void draw_fb_img(Context *ctx, fb_img img, int x, int y){
   int src_index, dest_index;
   for(int j = 0; j < img.yres; j++){
     src_index = j * img.xres;
