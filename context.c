@@ -14,17 +14,13 @@ void sig_handler(int sig){
   }
 }
 
-void create_context(Context *ctx){
-
-  // catch signals
+void context_setup(){
   if(signal(SIGINT, sig_handler) == SIG_ERR){
-    perror("Can't catch SIGINT");
+    perror("Cant't catch SIGINT");
   }
   if(signal(SIGSEGV, sig_handler) == SIG_ERR){
     perror("Can't catch SIGSEGV");
   }
-
-  // open the current tty and change to graphics mode
   char *current_tty = ttyname(STDIN_FILENO);
   if(current_tty == NULL){
     perror("Failed to get current tty");
@@ -37,9 +33,12 @@ void create_context(Context *ctx){
   }else{
     if(ioctl(ttyfd, KDSETMODE, KD_GRAPHICS) == -1){
       perror("Failed to set graphics mode");
-      // exit(EXIT_FAILURE);
-    };
+      exit(EXIT_FAILURE);
+    }
   }
+}
+
+void create_context(Context *ctx){
 
   int fd, xres, yres;
   uint32_t *f_buffer, *d_buffer;

@@ -18,8 +18,10 @@ enum input_command{
 
 int main(int argc, char **argv){
 
+  // context_setup();
+
   Context ctx;
-  create_context(&ctx);
+  // create_context(&ctx);
 
   struct timespec sleepy_time;
   sleepy_time.tv_nsec = 16.7 * 1000000;
@@ -27,8 +29,7 @@ int main(int argc, char **argv){
 
   int kefd;
   struct input_event kie;
-
-  kefd = open("/dev/input/event3", O_RDONLY | O_NONBLOCK);
+  kefd = open("/dev/input/event0", O_RDONLY | O_NONBLOCK);
   if(kefd == -1){
     perror("Opening keyboard file failed");
     ctx.running = 0;
@@ -36,16 +37,15 @@ int main(int argc, char **argv){
 
   // initialize objects
   Player p;
-  Player_init(&p);
+  // Player_init(&p);
 
   Box box;
-  Box_init(&box);
+  // Box_init(&box);
 
   ShiftingTriangle triangle;
-  ShiftingTriangle_init(&triangle);
-
+  // ShiftingTriangle_init(&triangle);
+  /*
   while(ctx.running){
-
     // input
     if(read(kefd, &kie, sizeof(struct input_event)) != -1){
       if(kie.type == EV_KEY){
@@ -60,23 +60,24 @@ int main(int argc, char **argv){
     }
   
     // update
-    Box_update(&ctx, &box);
-    ShiftingTriangle_update(&ctx, &triangle);
+    // Box_update(&ctx, &box);
+    // ShiftingTriangle_update(&ctx, &triangle);
     
     // render
     clear_context(&ctx);
-    Box_render(&ctx, &box);
-    ShiftingTriangle_render(&ctx, &triangle);
-    Player_render(&ctx, &p);
+    // Box_render(&ctx, &box);
+    // ShiftingTriangle_render(&ctx, &triangle);
+    // Player_render(&ctx, &p);
     blit(&ctx);
     
     // sleep
     nanosleep(&sleepy_time, NULL);
   }
+  */
 
   // clean up
-  Player_deallocate(&p);
-  destroy_context(&ctx);
+  // Player_deallocate(&p);
+  // destroy_context(&ctx);
 
   return 0;
 }

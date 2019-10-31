@@ -34,6 +34,7 @@ typedef struct{
   int running;
 } Context;
 
+void context_setup();
 void create_context(Context *ctx);
 void blit(Context *ctx);
 void plot_pixel(Context *ctx, uint32_t color, int x, int y);
