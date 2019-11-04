@@ -191,7 +191,7 @@ void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius){
 }
 
 void draw_fb_img(Context *ctx, fb_img img, int x, int y){
-  /* BMP files are read upside down. */
+  /* BMP files read upside down. */
   int src_index, dest_index;
   int i = 0;
   for(int j = img.yres - 1; j >= 0; j--){
