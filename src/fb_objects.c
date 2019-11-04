@@ -37,39 +37,54 @@ void Box_render(Context *ctx, Box *b){
 void Player_init(Player *p){
   p->x = 150;
   p->y = 1000;
-  p->width = 32;
-  p->height = 32;
   p->vx = 0;
   p->vy = 0;
   p->health = 100;
   p->level = 1;
-  StaticSprite_init(&p->sprite, "images/character_sprite.bmp");
+  p->right = 0;
+  p->left = 0;
+  p->speed = 10;
+  StaticSprite_init(&p->sprite, "images/character64.bmp");
+  p->width = p->sprite.img.xres;
+  p->height = p->sprite.img.yres;
 }
-void Player_update(Context *ctx, Player *p);
+void Player_update(Context *ctx, Player *p){
+  if(p->right){
+    p->x += p->speed;
+  }
+  if(p->left){
+    p->x -= p->speed;
+  }
+  if(p->x < 0){
+    p->x = 0;
+  }
+  if(p->x + p->width >= ctx->xres){
+    p->x = ctx->xres - p->width - 1;
+  }
+}
 void Player_render(Context *ctx, Player *p){
-  // StaticSprite_render(ctx, &p->sprite, p->x, p->y);
-  draw_fb_img(ctx, p->sprite.img, p->x, p->y);
+  StaticSprite_render(ctx, &p->sprite, p->x, p->y);
 }
 void Player_deallocate(Player *p){
   StaticSprite_deallocate(&p->sprite);
 }
 
-void ShiftingTriangle_init(ShiftingTriangle *t){
-  t->x1 = 50;
-  t->y1 = 50;
-  t->x2 = 150;
-  t->y2 = 600;
-  t->x3 = 700;
-  t->y3 = 1000;
+void ShiftingTriangle_init(ShiftingTriangle *t, uint32_t color, int *x, int *y){
+  t->x1 = x[0];
+  t->y1 = y[0];
+  t->x2 = x[1];
+  t->y2 = y[1];
+  t->x3 = x[2];
+  t->y3 = y[2];
   t->vx1 = -10;
   t->vy1 = 10;
   t->vx2 = 10;
   t->vy2 = 10;
   t->vx3 = 10;
   t->vy3 = -10;
-  t->color1 = 0xff00ff00;
-  t->color2 = 0xff00ff00;
-  t->color3 = 0xff00ff00;
+  t->color1 = color;
+  t->color2 = color;
+  t->color3 = color;
 }
 void ShiftingTriangle_update(Context *ctx, ShiftingTriangle *t){
   t->x1 += t->vx1;

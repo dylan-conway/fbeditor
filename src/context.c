@@ -191,9 +191,12 @@ void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius){
 }
 
 void draw_fb_img(Context *ctx, fb_img img, int x, int y){
+  /* BMP files are read upside down. */
   int src_index, dest_index;
-  for(int j = 0; j < img.yres; j++){
-    src_index = j * img.xres;
+  int i = 0;
+  for(int j = img.yres - 1; j >= 0; j--){
+    src_index = i * img.xres;
+    i++;
     dest_index = x + ((y + j) * ctx->xres);
     memcpy(ctx->d_buffer + dest_index, img.data + src_index, img.xres * (ctx->bpp / 8));
   }
@@ -231,4 +234,42 @@ void destroy_context(Context *ctx){
     perror("Failed to set text mode");
   }
   close(ttyfd);
+}
+
+void read_bmp(fb_img *img, char *filename){
+  int fd;
+  fd = open(filename, O_RDONLY);
+  if(fd == -1){
+    perror("Error opening static sprite image");
+  }
+  
+  int xres, yres;
+  lseek(fd, 18, SEEK_SET);
+  read(fd, &xres, 4);
+  read(fd, &yres, 4);
+
+  int bpp;
+  lseek(fd, 28, SEEK_SET);
+  read(fd, &bpp, 2);
+
+  int offset;
+  lseek(fd, 10, SEEK_SET);
+  read(fd, &offset, 4);
+
+  int size = sizeof(uint32_t) * xres * yres;
+  img->data = (uint32_t *)malloc(size);
+  lseek(fd, offset, SEEK_SET);
+  
+  uint32_t index = 0;
+  while(index < xres * yres){
+    read(fd, img->data + index, 3);
+    index++;
+  }
+
+  img->xres = xres;
+  img->yres = yres;
+  img->bpp = bpp;
+  img->size = size;
+
+  close(fd);
 }

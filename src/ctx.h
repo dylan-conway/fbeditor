@@ -29,6 +29,7 @@ typedef struct{
 
 typedef struct{
   int xres, yres;
+  int bpp, size;
   uint32_t *data;
 } fb_img;
 
@@ -44,6 +45,8 @@ void draw_fb_img(Context *ctx, fb_img img, int x, int y);
 void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height);
 void clear_context(Context *ctx);
 void destroy_context(Context *ctx);
+
+void read_bmp(fb_img *img, char *filename);
 
 typedef struct{
   fb_img img;
@@ -71,6 +74,8 @@ typedef struct{
   int x, y, vx, vy;
   int width, height;
   int health, level;
+  int right, left;
+  int speed;
   StaticSprite sprite;
 } Player;
 void Player_init(Player *p);
@@ -83,7 +88,7 @@ typedef struct{
   int vx1, vy1, vx2, vy2, vx3, vy3;
   uint32_t color1, color2, color3;
 } ShiftingTriangle;
-void ShiftingTriangle_init(ShiftingTriangle *t);
+void ShiftingTriangle_init(ShiftingTriangle *t, uint32_t color, int *x, int *y);
 void ShiftingTriangle_update(Context *ctx, ShiftingTriangle *t);
 void ShiftingTriangle_render(Context *ctx, ShiftingTriangle *t);
 
