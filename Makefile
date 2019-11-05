@@ -7,7 +7,7 @@ run:
 
 check:
 	$(CC) -o $(TARGET) $(TARGET).c src/context.c src/fb_objects.c src/sprite.c
-	sudo valgrind --leak-check=full --track-origins=yes --log-file="valgrind.log" ./$(TARGET) /dev/input/event3
+	sudo valgrind --leak-check=full --track-origins=yes --log-file="valgrind.log" ./$(TARGET)
 
 clean:
 	rm -f valgrind.log
