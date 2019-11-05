@@ -36,14 +36,14 @@ void Box_render(Context *ctx, Box *b){
 
 void Player_init(Player *p){
   p->x = 150;
-  p->y = 1000;
+  p->y = 980;
   p->vx = 0;
   p->vy = 0;
   p->health = 100;
   p->level = 1;
   p->right = 0;
   p->left = 0;
-  p->speed = 10;
+  p->speed = 5;
   StaticSprite_init(&p->sprite, "images/character64.bmp");
   p->width = p->sprite.img.xres;
   p->height = p->sprite.img.yres;
