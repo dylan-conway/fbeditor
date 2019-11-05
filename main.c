@@ -20,14 +20,15 @@ int main(int argc, char **argv){
   sleepy_time.tv_nsec = 16.7 * 1000000;
   sleepy_time.tv_sec = 0;
 
-  char *keyboard_file = argv[1];
+  char *kb_file = find_kb_file();
   int kefd;
   struct input_event kie;
-  kefd = open(keyboard_file, O_RDONLY | O_NONBLOCK);
+  kefd = open(kb_file, O_RDONLY | O_NONBLOCK);
   if(kefd == -1){
     perror("Opening keyboard file failed");
     ctx.running = 0;
   }
+  free(kb_file);
 
   // initialize objects
   Player p;
@@ -53,6 +54,7 @@ int main(int argc, char **argv){
   ShiftingTriangle_init(&triangle3, 0xffff0000, xc, yc);
 
   while(ctx.running){
+
     // input
     if(read(kefd, &kie, sizeof(struct input_event)) != -1){
       if(kie.type == EV_KEY){
@@ -108,14 +110,15 @@ int main(int argc, char **argv){
     // render
     clear_context(&ctx);
     // Box_render(&ctx, &box);
+    fill_rect(&ctx, 0xff556b2f, 0, 950, ctx.xres - 1, 129);
     ShiftingTriangle_render(&ctx, &triangle1);
     ShiftingTriangle_render(&ctx, &triangle2);
     ShiftingTriangle_render(&ctx, &triangle3);
     Player_render(&ctx, &p);
     blit(&ctx);
-    
+
     // sleep
-    nanosleep(&sleepy_time, NULL);
+    // nanosleep(&sleepy_time, NULL);
   }
 
   // clean up
