@@ -190,18 +190,6 @@ void draw_circle(Context *ctx, uint32_t color, int cx, int cy, int radius){
   // }
 }
 
-void draw_fb_img(Context *ctx, fb_img img, int x, int y){
-  /* BMP files read upside down. */
-  int src_index, dest_index;
-  int i = 0;
-  for(int j = img.yres - 1; j >= 0; j--){
-    src_index = i * img.xres;
-    i++;
-    dest_index = x + ((y + j) * ctx->xres);
-    memcpy(ctx->d_buffer + dest_index, img.data + src_index, img.xres * (ctx->bpp / 8));
-  }
-}
-
 void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height){
   int index;
   for(int i = 0; i < width; i++){
@@ -258,6 +246,7 @@ void read_bmp(fb_img *img, char *filename){
 
   int size = sizeof(uint32_t) * xres * yres;
   img->data = (uint32_t *)malloc(size);
+  memset(img->data, 0x00000000, size);
   lseek(fd, offset, SEEK_SET);
   
   uint32_t index = 0;
@@ -272,4 +261,58 @@ void read_bmp(fb_img *img, char *filename){
   img->size = size;
 
   close(fd);
+}
+
+void draw_fb_img(Context *ctx, fb_img img, int x, int y){
+  /* BMP files read upside down. */
+  int src_index = 0;
+  int dest_index = 0;
+  // int i = 0;
+  // for(int j = img.yres - 1; j >= 0; j--){
+  //   src_index = i * img.xres;
+  //   i++;
+  //   dest_index = x + ((y + j) * ctx->xres);
+  //   memcpy(ctx->d_buffer + dest_index, img.data + src_index, img.xres * (ctx->bpp / 8));
+  // }
+  for(int i = 0; i < img.xres; i++){
+    for(int j = 0; j < img.yres; j++){
+      src_index = (img.xres - i - 1) + (img.yres - j - 1) * img.xres;
+      dest_index = (x + i) + ((y + j) * ctx->xres);
+      uint32_t color = *(img.data + src_index);
+      if(color != 0x00000000){
+        memcpy(ctx->d_buffer + dest_index, img.data + src_index, ctx->bpp / 8);
+      }
+    }
+  }
+}
+
+char *find_kb_file(){
+  FILE *fp = fopen("/proc/bus/input/devices", "r");
+  char *line = NULL;
+  size_t size = 0;
+  int event = 0;
+
+  char *path = "/dev/input/event";
+  char *filename;
+  char *c_event;
+
+  int length = getline(&line, &size, fp);
+  while(length != -1){
+    if(strncmp(line, "B: EV=", 6) == 0){
+      if(strcmp(line, "B: EV=120013\n") == 0){
+        c_event = (char*)malloc(sizeof(char) * 10);
+        sprintf(c_event, "%d", event);
+        int size = sizeof(char) * (strlen(path) + strlen(c_event)) + 1;
+        filename = (char*)malloc(size);
+        strcpy(filename, path);
+        strcat(filename, c_event);
+        free(c_event);
+        free(line);
+        fclose(fp);
+        return filename;
+      }
+      event++;
+    }
+    length = getline(&line, &size, fp);
+  }
 }
