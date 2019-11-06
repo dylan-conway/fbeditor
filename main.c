@@ -9,16 +9,16 @@
 
 #include "src/ctx.h"
 
+int running = 1;
+
 int main(int argc, char **argv){
+
+  FILE *output_fp = fopen("output.txt", "w");
 
   context_setup();
 
   Context ctx;
   create_context(&ctx);
-
-  struct timespec sleepy_time;
-  sleepy_time.tv_nsec = 16.7 * 1000000;
-  sleepy_time.tv_sec = 0;
 
   char *kb_file = find_kb_file();
   int kefd;
@@ -28,7 +28,6 @@ int main(int argc, char **argv){
     perror("Opening keyboard file failed");
     ctx.running = 0;
   }
-  free(kb_file);
 
   // initialize objects
   Player p;
@@ -54,6 +53,8 @@ int main(int argc, char **argv){
   ShiftingTriangle_init(&triangle3, 0xffff0000, xc, yc);
 
   while(ctx.running){
+    float ms_start, ms_finish;
+    ms_start = clock() * 1000.0 / CLOCKS_PER_SEC;
 
     // input
     if(read(kefd, &kie, sizeof(struct input_event)) != -1){
@@ -99,7 +100,7 @@ int main(int argc, char **argv){
         }
       }
     }
-  
+      
     // update
     // Box_update(&ctx, &box);
     ShiftingTriangle_update(&ctx, &triangle1);
@@ -110,53 +111,27 @@ int main(int argc, char **argv){
     // render
     clear_context(&ctx);
     // Box_render(&ctx, &box);
-    fill_rect(&ctx, 0xff556b2f, 0, 950, ctx.xres - 1, 129);
+    // fill_rect(&ctx, 0xff556b2f, 0, 950, ctx.xres - 1, 129);
+    fill_rect(&ctx, 0xff556b2f, 0, 0, ctx.xres - 1, ctx.yres - 1);
     ShiftingTriangle_render(&ctx, &triangle1);
     ShiftingTriangle_render(&ctx, &triangle2);
     ShiftingTriangle_render(&ctx, &triangle3);
     Player_render(&ctx, &p);
     blit(&ctx);
 
-    // sleep
-    // nanosleep(&sleepy_time, NULL);
+    do{
+      ms_finish = clock() * 1000.0 / CLOCKS_PER_SEC;
+    }while(ms_finish - ms_start < 16.67);
+
+    fprintf(output_fp, "%f\n", ms_finish - ms_start);
   }
 
   // clean up
   Player_deallocate(&p);
   destroy_context(&ctx);
+  fclose(output_fp);
+  free(kb_file);
+  close(kefd);
 
   return 0;
 }
-
-// void get_keyboard_file(inputs *ins){
-
-//   char *file_name;
-//   char *dir_name = "/dev/input/";
-//   int fd;
-//   struct input_event ie;
-
-//   DIR *dir = opendir(dir_name);
-//   struct dirent *dir_content = readdir(dir);
-//   while(dir_content){
-//     if(strncmp(dir_content->d_name, "event", 5) == 0){
-
-//       int length = strlen(dir_name) + strlen(dir_content->d_name) + 1;
-//       file_name = (char *)malloc(sizeof(char) * length);
-//       strcpy(file_name, dir_name);
-//       strcat(file_name, dir_content->d_name);
-//       printf("%s\n", file_name);
-
-//       fd = open(file_name, O_RDONLY | O_NONBLOCK);
-//       if(read(fd, &ie, sizeof(struct input_event)) != -1){
-//         printf("%d, %d, %d\n", ie.code, ie.type, ie.value);
-//       }
-
-//       close(fd);
-//       free(file_name);
-//     }
-//     dir_content = readdir(dir);
-//   }
-
-//   free(dir_content);
-//   closedir(dir);
-// }
