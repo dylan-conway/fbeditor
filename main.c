@@ -112,7 +112,7 @@ int main(int argc, char **argv){
     clear_context(&ctx);
     // Box_render(&ctx, &box);
     // fill_rect(&ctx, 0xff556b2f, 0, 950, ctx.xres - 1, 129);
-    fill_rect(&ctx, 0xff556b2f, 0, 0, ctx.xres - 1, ctx.yres - 1);
+    fill_rect(&ctx, 0xffdeb887, 0, 0, ctx.xres - 1, ctx.yres - 1);
     ShiftingTriangle_render(&ctx, &triangle1);
     ShiftingTriangle_render(&ctx, &triangle2);
     ShiftingTriangle_render(&ctx, &triangle3);
