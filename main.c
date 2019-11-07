@@ -33,9 +33,6 @@ int main(int argc, char **argv){
   Player p;
   Player_init(&p);
 
-  // Box box;
-  // Box_init(&box);
-
   int xc[3];
   int yc[3];
 
@@ -102,7 +99,6 @@ int main(int argc, char **argv){
     }
       
     // update
-    // Box_update(&ctx, &box);
     ShiftingTriangle_update(&ctx, &triangle1);
     ShiftingTriangle_update(&ctx, &triangle2);
     ShiftingTriangle_update(&ctx, &triangle3);
@@ -110,8 +106,6 @@ int main(int argc, char **argv){
     
     // render
     clear_context(&ctx);
-    // Box_render(&ctx, &box);
-    // fill_rect(&ctx, 0xff556b2f, 0, 950, ctx.xres - 1, 129);
     fill_rect(&ctx, 0xffdeb887, 0, 0, ctx.xres - 1, ctx.yres - 1);
     ShiftingTriangle_render(&ctx, &triangle1);
     ShiftingTriangle_render(&ctx, &triangle2);
@@ -133,5 +127,6 @@ int main(int argc, char **argv){
   free(kb_file);
   close(kefd);
 
+  printf("exiting...\n");
   return 0;
 }
