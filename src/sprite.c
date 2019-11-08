@@ -3,6 +3,8 @@
 
 void StaticSprite_init(StaticSprite *s, char *filename){
   read_bmp(&s->img, filename);
+  s->xres = s->img.xres;
+  s->yres = s->img.yres;
 }
 
 void StaticSprite_render(Context *ctx, StaticSprite *s, int x, int y){

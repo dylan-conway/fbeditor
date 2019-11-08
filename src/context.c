@@ -99,7 +99,6 @@ void create_context(Context *ctx){
   ctx->vinfo = vinfo;
   ctx->f_buffer = f_buffer;
   ctx->d_buffer = d_buffer;
-  ctx->running = running;
 }
 
 void blit(Context *ctx){
@@ -266,7 +265,7 @@ void read_bmp(fb_img *img, char *filename){
     index++;
   }
 
-  // printf("%dx%d, %dbpp\n", xres, yres, bpp);
+  printf("%dx%d, %dbpp\n", xres, yres, bpp);
 
   img->xres = xres;
   img->yres = yres;

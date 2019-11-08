@@ -1,6 +1,20 @@
 
 #include "ctx.h"
 
+void Text_init(Text *t, int x, int y){
+  StaticSprite_init(&t->sprite, "images/mainmenu-press-enter-to-start.bmp");
+  t->xres = t->sprite.xres;
+  t->yres = t->sprite.yres;
+  t->x = x;
+  t->y = y;
+}
+void Text_render(Text *t, Context *ctx){
+  StaticSprite_render(ctx, &t->sprite, t->x, t->y);
+}
+void Text_deallocate(Text *t){
+  StaticSprite_deallocate(&t->sprite);
+}
+
 void Box_init(Box *b){
   b->x = 500;
   b->y = 500;
@@ -45,7 +59,7 @@ void Player_init(Player *p){
   p->right = 0;
   p->down = 0;
   p->left = 0;
-  p->speed = 4;
+  p->speed = 3;
   p->diag_speed = round(sqrt((p->speed * p->speed) / 2));
   p->facing = SOUTH;
   Sprite_init(&p->sprite, "images/character_sprite_sheet.bmp", 32, 48);

@@ -11,12 +11,18 @@
 #include <signal.h>
 #include <linux/fb.h>
 #include <linux/kd.h>
+#include <linux/input.h>
 #include <stdint.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
 #define itoa(x) #x
+
+typedef enum{
+  MAINMENU,
+  LEVEL0,
+} game_state;
 
 typedef enum{
   NORTH,
@@ -26,7 +32,7 @@ typedef enum{
   NORTHEAST,
   SOUTHEAST,
   SOUTHWEST,
-  NORTHWEST
+  NORTHWEST,
 } faces;
 
 typedef struct{
@@ -38,7 +44,6 @@ typedef struct{
   struct fb_fix_screeninfo finfo;
   int fd;
   int bpp;
-  int running;
 } Context;
 
 typedef struct{
@@ -82,6 +87,15 @@ void Sprite_render(Context *ctx, Sprite *s, int x, int y, faces direction);
 void Sprite_deallocate(Sprite *s);
 
 typedef struct{
+  int x, y;
+  int xres, yres;
+  StaticSprite sprite;
+} Text;
+void Text_init(Text *t, int x, int y);
+void Text_render(Text *t, Context *ctx);
+void Text_deallocate(Text *t);
+
+typedef struct{
   int x, y, vx, vy;
   int width, height;
   uint32_t color;
@@ -113,5 +127,32 @@ typedef struct{
 void ShiftingTriangle_init(ShiftingTriangle *t, uint32_t color, int *x, int *y);
 void ShiftingTriangle_update(Context *ctx, ShiftingTriangle *t);
 void ShiftingTriangle_render(Context *ctx, ShiftingTriangle *t);
+
+typedef struct{
+  Player player;
+  ShiftingTriangle *shifting_triangles;
+  Text press_enter_text;
+} Entities;
+
+typedef struct{
+  int kbfd;
+  struct input_event kbie;
+} Inputs;
+
+typedef struct{
+  int running;
+  game_state state;
+  Entities entities;
+  Inputs inputs;
+} Game;
+
+void Inputs_init(Inputs *inputs, Game *g);
+void Inputs_process_keyboard(Inputs *inputs, Game *g);
+
+void Game_init(Game *g);
+void Game_process_input(Game *g);
+void Game_update(Game *g, Context *ctx);
+void Game_render(Game *g, Context *ctx);
+void Game_deallocate(Game *g);
 
 #endif
