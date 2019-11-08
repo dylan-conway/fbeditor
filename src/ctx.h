@@ -66,8 +66,6 @@ void destroy_context(Context *ctx);
 void read_bmp(fb_img *img, char *filename);
 void draw_fb_img(Context *ctx, fb_img img, int sx, int sy, int xres, int yres, int dx, int dy);
 
-char *find_kb_file();
-
 typedef struct{
   int xres, yres;
   fb_img img;
@@ -135,9 +133,19 @@ typedef struct{
 } Entities;
 
 typedef struct{
+  int x, y;
+} Mouse;
+void Mouse_init(Mouse *m);
+void Mouse_render(Mouse *m, Context *ctx);
+
+typedef struct{
   int kbfd;
   struct input_event kbie;
+  Mouse ms;
+  int msfd;
+  struct input_event msie;
 } Inputs;
+char *find_event_file(char *ev);
 
 typedef struct{
   int running;
@@ -147,6 +155,7 @@ typedef struct{
 } Game;
 
 void Inputs_init(Inputs *inputs, Game *g);
+void Inputs_process_mouse(Inputs *inputs, Game *g);
 void Inputs_process_keyboard(Inputs *inputs, Game *g);
 
 void Game_init(Game *g);

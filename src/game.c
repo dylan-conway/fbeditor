@@ -26,6 +26,7 @@ void Game_init(Game *g){
   Inputs_init(&g->inputs, g);
 }
 void Game_process_input(Game *g){
+  Inputs_process_mouse(&g->inputs, g);
   Inputs_process_keyboard(&g->inputs, g);
 }
 void Game_update(Game *g, Context *ctx){
@@ -54,6 +55,7 @@ void Game_render(Game *g, Context *ctx){
       Player_render(ctx, &g->entities.player);
       break;
   }
+  Mouse_render(&g->inputs.ms, ctx);
   blit(ctx);
 }
 void Game_deallocate(Game *g){

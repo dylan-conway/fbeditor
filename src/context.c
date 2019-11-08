@@ -290,34 +290,3 @@ void draw_fb_img(Context *ctx, fb_img img, int sx, int sy, int xres, int yres, i
     }
   }
 }
-
-char *find_kb_file(){
-  FILE *fp = fopen("/proc/bus/input/devices", "r");
-  char *line = NULL;
-  size_t size = 0;
-  int event = 0;
-
-  char *path = "/dev/input/event";
-  char *filename;
-  char *c_event;
-
-  int length = getline(&line, &size, fp);
-  while(length != -1){
-    if(strncmp(line, "B: EV=", 6) == 0){
-      if(strcmp(line, "B: EV=120013\n") == 0){
-        c_event = (char*)malloc(sizeof(char) * 10);
-        sprintf(c_event, "%d", event);
-        int size = sizeof(char) * (strlen(path) + strlen(c_event)) + 1;
-        filename = (char*)malloc(size);
-        strcpy(filename, path);
-        strcat(filename, c_event);
-        free(c_event);
-        free(line);
-        fclose(fp);
-        return filename;
-      }
-      event++;
-    }
-    length = getline(&line, &size, fp);
-  }
-}
