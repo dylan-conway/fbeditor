@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <math.h>
 #include <signal.h>
 #include <linux/fb.h>
 #include <linux/kd.h>
@@ -16,6 +17,17 @@
 #include <sys/mman.h>
 
 #define itoa(x) #x
+
+typedef enum{
+  NORTH,
+  EAST,
+  SOUTH,
+  WEST,
+  NORTHEAST,
+  SOUTHEAST,
+  SOUTHWEST,
+  NORTHWEST
+} faces;
 
 typedef struct{
   int xres;
@@ -47,11 +59,12 @@ void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height
 void clear_context(Context *ctx);
 void destroy_context(Context *ctx);
 void read_bmp(fb_img *img, char *filename);
-void draw_fb_img(Context *ctx, fb_img img, int x, int y);
+void draw_fb_img(Context *ctx, fb_img img, int sx, int sy, int xres, int yres, int dx, int dy);
 
 char *find_kb_file();
 
 typedef struct{
+  int xres, yres;
   fb_img img;
 } StaticSprite;
 void StaticSprite_init(StaticSprite *s, char *filename);
@@ -59,9 +72,13 @@ void StaticSprite_render(Context *ctx, StaticSprite *s, int x, int y);
 void StaticSprite_deallocate(StaticSprite *s);
 
 typedef struct{
-  uint32_t *data;
+  int rate, draw_counter;
+  int xres, yres;
+  int sx, sy;
+  fb_img img;
 } Sprite;
-void Sprite_init(Sprite *s, char *filename);
+void Sprite_init(Sprite *s, char *filename, int xres, int yress);
+void Sprite_render(Context *ctx, Sprite *s, int x, int y, faces direction);
 void Sprite_deallocate(Sprite *s);
 
 typedef struct{
@@ -75,13 +92,15 @@ void Box_render(Context *ctx, Box *b);
 
 typedef struct{
   int x, y, vx, vy;
-  int width, height;
+  int xres, yres;
   int health, level;
-  int right, left;
-  int speed;
-  StaticSprite sprite;
+  int up, right, down, left;
+  int speed, diag_speed;
+  faces facing;
+  Sprite sprite;
 } Player;
 void Player_init(Player *p);
+void Player_update_speed(Player *p, int speed);
 void Player_update(Context *ctx, Player *p);
 void Player_render(Context *ctx, Player *p);
 void Player_deallocate(Player *p);

@@ -43,11 +43,11 @@ int main(int argc, char **argv){
   ShiftingTriangle triangle2;
   xc[0] = 200; xc[1] = 450; xc[2] = 1500;
   yc[0] = 1000; yc[1] = 750; yc[2] = 100;
-  ShiftingTriangle_init(&triangle2, 0xff00ff00, xc, yc);
+  ShiftingTriangle_init(&triangle2, 0xff0000ff, xc, yc);
   ShiftingTriangle triangle3;
   xc[0] = 1700; xc[1] = 550; xc[2] = 150;
   yc[0] = 890; yc[1] = 525; yc[2] = 150;
-  ShiftingTriangle_init(&triangle3, 0xffff0000, xc, yc);
+  ShiftingTriangle_init(&triangle3, 0xff0000ff, xc, yc);
 
   while(ctx.running){
     float ms_start, ms_finish;
@@ -67,6 +67,15 @@ int main(int argc, char **argv){
               /* key repeat */
             }
             break;
+          case KEY_UP:
+            if(kie.value == 0){
+              p.up = 0;
+            }else if(kie.value == 1){
+              p.up = 1;
+            }else if(kie.value == 2){
+              p.up = 1;
+            }
+            break;
           case KEY_RIGHT:
             if(kie.value == 0){
               p.right = 0;
@@ -74,6 +83,15 @@ int main(int argc, char **argv){
               p.right = 1;
             }else if(kie.value == 2){
               p.right = 1;
+            }
+            break;
+          case KEY_DOWN:
+            if(kie.value == 0){
+              p.down = 0;
+            }else if(kie.value == 1){
+              p.down = 1;
+            }else if(kie.value == 2){
+              p.down = 1;
             }
             break;
           case KEY_LEFT:
@@ -117,7 +135,7 @@ int main(int argc, char **argv){
       ms_finish = clock() * 1000.0 / CLOCKS_PER_SEC;
     }while(ms_finish - ms_start < 16.67);
 
-    fprintf(output_fp, "%f\n", ms_finish - ms_start);
+    // fprintf(output_fp, "%f\n", ms_finish - ms_start);
   }
 
   // clean up

@@ -205,7 +205,7 @@ void fill_rect(Context *ctx, uint32_t color, int x, int y, int width, int height
 }
 
 void clear_context(Context *ctx){
-  memset(ctx->d_buffer, 0xff000000, ctx->xres * ctx->yres * (ctx->bpp / 8));
+  memset(ctx->d_buffer, 0x00000000, ctx->xres * ctx->yres * (ctx->bpp / 8));
 }
 
 void destroy_context(Context *ctx){
@@ -225,35 +225,48 @@ void destroy_context(Context *ctx){
 }
 
 void read_bmp(fb_img *img, char *filename){
-  int fd;
+  int fd = 0;
   fd = open(filename, O_RDONLY);
   if(fd == -1){
     perror("Error opening static sprite image");
   }
   
-  int xres, yres;
+  int xres = 0;
+  int yres = 0;
   lseek(fd, 18, SEEK_SET);
   read(fd, &xres, 4);
   read(fd, &yres, 4);
 
-  int bpp;
+  int bpp = 0;
   lseek(fd, 28, SEEK_SET);
   read(fd, &bpp, 2);
 
-  int offset;
+  int offset = 0;
   lseek(fd, 10, SEEK_SET);
   read(fd, &offset, 4);
 
   int size = sizeof(uint32_t) * xres * yres;
   img->data = (uint32_t *)malloc(size);
   memset(img->data, 0x00000000, size);
+  uint32_t *buffer = (uint32_t*)alloca(size);
+  memset(buffer, 0x00000000, size);
   lseek(fd, offset, SEEK_SET);
   
-  uint32_t index = 0;
+  // read the contents of the file into a buffer
+  int index = 0;
   while(index < xres * yres){
-    read(fd, img->data + index, 3);
+    read(fd, buffer + index, 3);
     index++;
   }
+
+  // flip the contents of the buffer while copying them to the image data pointer
+  index = 0;
+  while(index < yres){
+    memcpy(img->data + (((yres - 1) * xres) - (index * xres)), buffer + index * xres, xres * 4);
+    index++;
+  }
+
+  // printf("%dx%d, %dbpp\n", xres, yres, bpp);
 
   img->xres = xres;
   img->yres = yres;
@@ -263,24 +276,17 @@ void read_bmp(fb_img *img, char *filename){
   close(fd);
 }
 
-void draw_fb_img(Context *ctx, fb_img img, int x, int y){
-  /* BMP files read upside down. */
+void draw_fb_img(Context *ctx, fb_img img, int sx, int sy, int xres, int yres, int dx, int dy){
   int src_index = 0;
   int dest_index = 0;
-  // int i = 0;
-  // for(int j = img.yres - 1; j >= 0; j--){
-  //   src_index = i * img.xres;
-  //   i++;
-  //   dest_index = x + ((y + j) * ctx->xres);
-  //   memcpy(ctx->d_buffer + dest_index, img.data + src_index, img.xres * (ctx->bpp / 8));
-  // }
-  for(int i = 0; i < img.xres; i++){
-    for(int j = 0; j < img.yres; j++){
-      src_index = (img.xres - i - 1) + (img.yres - j - 1) * img.xres;
-      dest_index = (x + i) + ((y + j) * ctx->xres);
-      uint32_t color = *(img.data + src_index);
-      if(color != 0x00000000){
-        memcpy(ctx->d_buffer + dest_index, img.data + src_index, ctx->bpp / 8);
+  int i = 0;
+  int j = 0;
+  
+  for(i = 0; i < xres; i++){
+    for(j = 0; j < yres; j++){
+      src_index = (sx + i) + (sy + j) * img.xres;
+      if(*(img.data + src_index) != 0x00000000){
+        plot_pixel(ctx, *(img.data + src_index), dx + i, dy + j);
       }
     }
   }

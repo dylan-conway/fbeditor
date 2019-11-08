@@ -36,37 +36,77 @@ void Box_render(Context *ctx, Box *b){
 
 void Player_init(Player *p){
   p->x = 150;
-  p->y = 980;
+  p->y = 64;
   p->vx = 0;
   p->vy = 0;
   p->health = 100;
   p->level = 1;
+  p->up = 0;
   p->right = 0;
+  p->down = 0;
   p->left = 0;
-  p->speed = 5;
-  StaticSprite_init(&p->sprite, "images/character64.bmp");
-  p->width = p->sprite.img.xres;
-  p->height = p->sprite.img.yres;
+  p->speed = 4;
+  p->diag_speed = round(sqrt((p->speed * p->speed) / 2));
+  p->facing = SOUTH;
+  Sprite_init(&p->sprite, "images/character_sprite_sheet.bmp", 32, 48);
+  p->xres = p->sprite.xres;
+  p->yres = p->sprite.yres;
 }
+
+void Player_update_speed(Player *p, int speed){
+  p->speed = speed;
+  p->diag_speed = round(sqrt((p->speed * p->speed) / 2));
+}
+
 void Player_update(Context *ctx, Player *p){
-  if(p->right){
+  if(p->up && p->right){
+    p->facing = NORTHEAST;
+    p->x += p->diag_speed;
+    p->y -= p->diag_speed;
+  }else if(p->right && p->down){
+    p->facing = SOUTHEAST;
+    p->x += p->diag_speed;
+    p->y += p->diag_speed;
+  }else if(p->down && p->left){
+    p->facing = SOUTHWEST;
+    p->x -= p->diag_speed;
+    p->y += p->diag_speed;
+  }else if(p->left && p->up){
+    p->facing = NORTHWEST;
+    p->x -= p->diag_speed;
+    p->y -= p->diag_speed;
+  }else if(p->up){
+    p->facing = NORTH;
+    p->y -= p->speed;
+  }else if(p->right){
+    p->facing = EAST;
     p->x += p->speed;
-  }
-  if(p->left){
+  }else if(p->down){
+    p->facing = SOUTH;
+    p->y += p->speed;
+  }else if(p->left){
+    p->facing = WEST;
     p->x -= p->speed;
   }
+  
   if(p->x < 0){
     p->x = 0;
   }
-  if(p->x + p->width >= ctx->xres){
-    p->x = ctx->xres - p->width - 1;
+  if(p->x + p->xres >= ctx->xres){
+    p->x = ctx->xres - p->xres - 1;
+  }
+  if(p->y < 0){
+    p->y = 0;
+  }
+  if(p->y + p->yres >= ctx->yres){
+    p->y = ctx->yres - p->yres - 1;
   }
 }
 void Player_render(Context *ctx, Player *p){
-  StaticSprite_render(ctx, &p->sprite, p->x, p->y);
+  Sprite_render(ctx, &p->sprite, p->x, p->y, p->facing);
 }
 void Player_deallocate(Player *p){
-  StaticSprite_deallocate(&p->sprite);
+  Sprite_deallocate(&p->sprite);
 }
 
 void ShiftingTriangle_init(ShiftingTriangle *t, uint32_t color, int *x, int *y){
