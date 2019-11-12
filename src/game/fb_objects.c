@@ -1,5 +1,5 @@
 
-#include "ctx.h"
+#include "../headers/ctx.h"
 
 void Text_init(Text *t, int x, int y){
   StaticSprite_init(&t->sprite, "images/mainmenu-press-enter-to-start.bmp");

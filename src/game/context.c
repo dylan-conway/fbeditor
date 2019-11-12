@@ -1,5 +1,5 @@
 
-#include "ctx.h"
+#include "../headers/ctx.h"
 
 int ttyfd = -1;
 

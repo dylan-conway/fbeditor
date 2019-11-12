@@ -1,5 +1,5 @@
 
-#include "ctx.h"
+#include "../headers/ctx.h"
 
 void StaticSprite_init(StaticSprite *s, char *filename){
   read_bmp(&s->img, filename);

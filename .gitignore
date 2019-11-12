@@ -4,3 +4,5 @@ main_old.c
 .vscode/
 valgrind.log
 output.txt
+bin/*
+logs/*

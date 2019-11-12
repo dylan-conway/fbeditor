@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-#include "src/ctx.h"
+#include "../headers/ctx.h"
 
 int running = 1;
 

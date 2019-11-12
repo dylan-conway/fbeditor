@@ -1,5 +1,5 @@
 
-#include "ctx.h"
+#include "../headers/ctx.h"
 
 void Mouse_init(Mouse *m){
   m->x = 1000;
@@ -62,17 +62,17 @@ void Inputs_init(Inputs *inputs, Game *g){
 }
 
 void Inputs_process_mouse(Inputs *inputs, Game *g){
-  // read(inputs->msfd, &inputs->msie, sizeof(struct input_event));
-  // if(inputs->msie.type == EV_REL){
-  //   switch(inputs->msie.code){
-  //     case REL_X:
-  //       // inputs->ms.x += inputs->msie.value;
-  //       break;
-  //     case REL_Y:
-  //       // inputs->ms.y += inputs->msie.value;
-  //       break;
-  //   }
-  // }
+  read(inputs->msfd, &inputs->msie, sizeof(struct input_event));
+  if(inputs->msie.type == EV_REL){
+    switch(inputs->msie.code){
+      case REL_X:
+        inputs->ms.x += inputs->msie.value;
+        break;
+      case REL_Y:
+        inputs->ms.y += inputs->msie.value;
+        break;
+    }
+  }
 }
 
 void Inputs_process_keyboard(Inputs *inputs, Game *g){

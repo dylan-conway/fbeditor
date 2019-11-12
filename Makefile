@@ -1,14 +1,15 @@
 
-CC = gcc
-TARGET = main
+make:
+	mkdir -p bin logs
+	gcc src/main.c -o bin/main
+	gcc src/input/main.c src/game/inputs.c src/game/context.c -o bin/input
+	gcc src/game/main.c src/game/context.c src/game/fb_objects.c src/game/sprite.c src/game/game.c src/game/inputs.c -lm -o bin/game
 
 run:
-	$(CC) -o $(TARGET) $(TARGET).c src/context.c src/fb_objects.c src/sprite.c src/game.c src/inputs.c -lm
+	sudo ./bin/main
 
 check:
-	$(CC) -o $(TARGET) $(TARGET).c src/context.c src/fb_objects.c src/sprite.c src/game.c src/inputs.c -lm
-	sudo valgrind --leak-check=full --track-origins=yes --log-file="valgrind.log" ./$(TARGET)
+	sudo valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --trace-children=yes --log-file=logs/pid-%p.log ./bin/main
 
 clean:
-	rm -f valgrind.log
-	rm -f $(TARGET)
+	rm -rf bin logs

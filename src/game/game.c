@@ -1,5 +1,5 @@
 
-#include "ctx.h"
+#include "../headers/ctx.h"
 
 void Game_init(Game *g){
 
