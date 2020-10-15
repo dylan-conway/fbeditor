@@ -22,6 +22,7 @@ static int ttyfd;
 struct Context {
     int fd, xres, yres;
     int buffer_size;
+    int running;
     unsigned int* f_buffer;
     unsigned int* d_buffer;
     struct fb_var_screeninfo vinfo;

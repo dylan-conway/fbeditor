@@ -76,6 +76,7 @@ void context_init(struct Context* ctx, int mode){
     ctx->xres = xres;
     ctx->yres = yres;
     ctx->buffer_size = buffer_size;
+    ctx->running = 1;
     ctx->vinfo = vinfo;
     ctx->finfo = finfo;
     ctx->f_buffer = f_buffer;

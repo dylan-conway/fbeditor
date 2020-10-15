@@ -1,6 +1,6 @@
 
 make:
-	gcc -o main main.c ctx.c
+	gcc -o main main.c ctx.c -lpthread
 
 run:
 	sudo ./main
