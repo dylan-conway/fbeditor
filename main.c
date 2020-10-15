@@ -111,7 +111,7 @@ int main(int argc, char** argv){
         }
 
 
-        // clear_screen(&ctx, 0x00000000);
+        clear_screen(&ctx, 0x00000000);
         plot_pixel(&ctx, x, y, 0xffffffff);
         blit(&ctx);
 
