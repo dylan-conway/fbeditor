@@ -42,34 +42,34 @@ void context_init(struct Context* ctx, int mode){
     struct fb_fix_screeninfo finfo;
 
     fd = open("/dev/fb0", O_RDWR);
-	if(fd == -1){
-		fprintf(stderr, "Error: failed to open /dev/fb0\n");
-		context_cleanup(ctx);
+    if(fd == -1){
+        fprintf(stderr, "Error: failed to open /dev/fb0\n");
+        context_cleanup(ctx);
         exit(EXIT_FAILURE);
-	}
+    }
 
-	ioctl(fd, FBIOGET_VSCREENINFO, &vinfo);
-	ioctl(fd, FBIOGET_FSCREENINFO, &finfo);
-	vinfo.grayscale = 0;
-	vinfo.bits_per_pixel = 32;
-	ioctl(fd, FBIOPUT_VSCREENINFO, &vinfo);
-	ioctl(fd, FBIOGET_VSCREENINFO, &vinfo);
+    ioctl(fd, FBIOGET_VSCREENINFO, &vinfo);
+    ioctl(fd, FBIOGET_FSCREENINFO, &finfo);
+    vinfo.grayscale = 0;
+    vinfo.bits_per_pixel = 32;
+    ioctl(fd, FBIOPUT_VSCREENINFO, &vinfo);
+    ioctl(fd, FBIOGET_VSCREENINFO, &vinfo);
 
-	xres = vinfo.xres;
-	yres = vinfo.yres;
-	buffer_size = xres * yres * (32 / 8);
+    xres = vinfo.xres;
+    yres = vinfo.yres;
+    buffer_size = xres * yres * (32 / 8);
 
-	f_buffer = mmap(
-		NULL, buffer_size, PROT_READ | PROT_WRITE,
-		MAP_SHARED,
-		fd, (off_t)0
-	);
-	
-	d_buffer = mmap(
-		NULL, buffer_size, PROT_READ | PROT_WRITE,
-		MAP_PRIVATE | MAP_ANONYMOUS,
-		-1, (off_t)0
-	);
+    f_buffer = mmap(
+        NULL, buffer_size, PROT_READ | PROT_WRITE,
+        MAP_SHARED,
+        fd, (off_t)0
+    );
+    
+    d_buffer = mmap(
+        NULL, buffer_size, PROT_READ | PROT_WRITE,
+        MAP_PRIVATE | MAP_ANONYMOUS,
+        -1, (off_t)0
+    );
 
     // Fill the context struct.
     ctx->fd = fd;

@@ -20,13 +20,13 @@ static int ttyfd;
 
 // Contains framebuffer and terminal data.
 struct Context {
-	int fd, xres, yres;
-	int buffer_size;
-	unsigned int* f_buffer;
-	unsigned int* d_buffer;
-	struct fb_var_screeninfo vinfo;
-	struct fb_fix_screeninfo finfo;
-	struct termios original_term_settings;
+    int fd, xres, yres;
+    int buffer_size;
+    unsigned int* f_buffer;
+    unsigned int* d_buffer;
+    struct fb_var_screeninfo vinfo;
+    struct fb_fix_screeninfo finfo;
+    struct termios original_term_settings;
 };
 
 /**
