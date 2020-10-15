@@ -3,14 +3,6 @@
 
 void context_init(struct Context* ctx, int mode){
 
-    // Turn off terminal echo.
-    struct termios old_term, new_term;
-
-    tcgetattr(STDIN_FILENO, &old_term);
-    new_term = old_term;
-    new_term.c_lflag &= ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
-
     // Get current terminal name and set to desired mode.
     int status;
     char* current_tty;
@@ -30,6 +22,14 @@ void context_init(struct Context* ctx, int mode){
         fprintf(stderr, "Error: failed to set mode to KD_GRAPHICS\n");
         exit(EXIT_FAILURE);
     }
+
+    // Turn off terminal echo.
+    struct termios old_term, new_term;
+
+    tcgetattr(STDIN_FILENO, &old_term);
+    new_term = old_term;
+    new_term.c_lflag &= ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
 
     // Gather necessary framebuffer attributes and create memory for
     // framebuffer and double buffer.
