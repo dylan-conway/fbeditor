@@ -115,3 +115,9 @@ void blit(struct Context* ctx){
 void clear_screen(struct Context* ctx, unsigned int color){
     memset(ctx->d_buffer, color, ctx->buffer_size);
 }
+
+void plot_pixel(struct Context* ctx, int x, int y, unsigned int color){
+    int index = x + (y * ctx->xres);
+    ctx->d_buffer[index] = color;
+}
+

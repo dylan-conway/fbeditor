@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
 #include <linux/input.h>
 
 #include "ctx.h"
@@ -36,11 +37,6 @@ void sig_handler(int sig){
 
 int main(int argc, char** argv){
 
-    context_init(&ctx, KD_GRAPHICS);
-
-    clear_screen(&ctx, 0xffdeb887);
-    blit(&ctx);
-
     struct sigaction sa;
 
     memset(&sa, 0, sizeof(sa));
@@ -50,6 +46,8 @@ int main(int argc, char** argv){
     sigaction(SIGSEGV, &sa, NULL);
     sigaction(SIGSTKFLT, &sa, NULL);
     sigaction(SIGABRT, &sa, NULL);
+
+    context_init(&ctx, KD_TEXT);
 
     char* keyboard_file_name = find_event_file("B: EV=120013");
     if(keyboard_file_name == NULL){
@@ -65,9 +63,16 @@ int main(int argc, char** argv){
     }
 
     int running = 1;
+    float ms_start, ms_finish;
     struct input_event kbie = {};
 
+    int x = 10;
+    int y = 10;
+
     while(running){
+
+        ms_start = clock() * 1000.0 / CLOCKS_PER_SEC;
+
         read(kbfd, &kbie, sizeof(struct input_event));
         if(kbie.type == EV_KEY){
             switch(kbie.code){
@@ -75,19 +80,44 @@ int main(int argc, char** argv){
                     switch(kbie.value){
                         case 0:{
                             // key up
+                            break;
                         }
                         case 1:{
                             // key down
                             running = 0;
+                            break;
                         }
                         case 2:{
                             // key repeat
+                            break;
                         }
                     }
+                    break;
                 }
-
+                case KEY_RIGHT:{
+                    switch(kbie.value){
+                        case 1:{
+                            x += 10;
+                            break;
+                        }
+                        case 2:{
+                            x += 10;
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
+
+
+        // clear_screen(&ctx, 0x00000000);
+        plot_pixel(&ctx, x, y, 0xffffffff);
+        blit(&ctx);
+
+        do{
+            ms_finish = clock() * 1000.0 / CLOCKS_PER_SEC;
+        } while(ms_finish - ms_start < 16.67);
     }
 
 

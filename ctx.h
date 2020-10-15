@@ -57,4 +57,13 @@ void blit(struct Context* ctx);
  */
 void clear_screen(struct Context* ctx, unsigned int color);
 
+/**
+ * Colors a single pixel.
+ * @param ctx Contains framebuffer and terminal data.
+ * @param x x coord.
+ * @param y y coord.
+ * @param color The color for the pixel.
+ */
+void plot_pixel(struct Context* ctx, int x, int y, unsigned int color);
+
 #endif
