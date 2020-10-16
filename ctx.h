@@ -14,21 +14,28 @@
 #include <linux/fb.h>
 #include <linux/kd.h>
 
-// The file descriptor for the current tty. Needs to be static
-// and global for use in signal handler function.
-static int ttyfd;
+#define uint64 unsigned long
+#define uint unsigned int
+#define uint16 unsigned short
+#define uint8 unsigned char
 
 // Contains framebuffer and terminal data.
 struct Context {
     int fd, xres, yres;
     int buffer_size;
     int running;
+    int bits_per_pixel;
+    int bytes_per_pixel;
     unsigned int* f_buffer;
     unsigned int* d_buffer;
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
     struct termios original_term_settings;
 };
+
+// The file descriptor for the current tty. Needs to be static
+// and global for use in signal handler function.
+static int ttyfd;
 
 /**
  * Prepare terminal for drawing and fill the context struct.
@@ -56,7 +63,7 @@ void blit(struct Context* ctx);
  * @param ctx Contains framebuffer and terminal data.
  * @param color The color used to clear the screen.
  */
-void clear_screen(struct Context* ctx, unsigned int color);
+void clear_screen(struct Context* ctx, uint color);
 
 /**
  * Colors a single pixel.
@@ -65,6 +72,32 @@ void clear_screen(struct Context* ctx, unsigned int color);
  * @param y y coord.
  * @param color The color for the pixel.
  */
-void plot_pixel(struct Context* ctx, int x, int y, unsigned int color);
+void plot_pixel(struct Context* ctx, int x, int y, uint color);
+
+/**
+ * Fills a rectangle with one color.
+ * @param ctx Contains framebuffer and terminal data.
+ * @param x Top left corner x coord.
+ * @param y Top left corner y coord.
+ * @param w Width of rect.
+ * @param h Height of rect.
+ * @param color The color to fill with.
+ */
+void fill_rect(struct Context* ctx, int x, int y, int w, int h, uint color);
+
+/**
+ * Draw the outline of a rectangle one pixel thick.
+ * @param ctx Contains framebuffer and terminal data.
+ * @param x Top left corner x coord.
+ * @param y Top left corner y coord.
+ * @param w Width of rect.
+ * @param h Height of rect.
+ * @param color The color to draw with.
+ */
+void draw_rect(struct Context* ctx, int x, int y, int w, int h, uint color);
+
+void draw_horizontal_line(struct Context* ctx, int x, int y, int l, uint color);
+
+void draw_vertical_line(struct Context* ctx, int x, int y, int l, uint color);
 
 #endif
