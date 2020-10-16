@@ -30,10 +30,15 @@ void mouse_cleanup(struct Mouse* m){
     pthread_mutex_destroy(&m->mutex);
 }
 
+// 60 fps
 void mouse_render(struct Context* ctx, struct Mouse* m){
     pthread_mutex_lock(&m->mutex);
-    fill_rect(ctx, m->x, m->y, m->w, m->h, 0xff0000);
-    draw_rect(ctx, m->x, m->y, m->w, m->h, 0xffffff);
+    int x = m->x;
+    int y = m->y;
+    int w = m->w;
+    int h = m->h;
+    fill_rect(ctx, x, y, w, h, 0xff0000);
+    draw_rect(ctx, x, y, w, h, 0xffffff);
     pthread_mutex_unlock(&m->mutex);
 }
 

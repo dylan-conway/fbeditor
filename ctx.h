@@ -21,7 +21,7 @@
 
 // Contains framebuffer and terminal data.
 struct Context {
-    int fd, xres, yres;
+    int fd, ttyfd, xres, yres;
     int buffer_size;
     int running;
     int bits_per_pixel;
@@ -32,10 +32,6 @@ struct Context {
     struct fb_fix_screeninfo finfo;
     struct termios original_term_settings;
 };
-
-// The file descriptor for the current tty. Needs to be static
-// and global for use in signal handler function.
-static int ttyfd;
 
 /**
  * Prepare terminal for drawing and fill the context struct.

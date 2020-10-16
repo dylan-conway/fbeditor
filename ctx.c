@@ -6,6 +6,7 @@ void context_init(struct Context* ctx, int mode){
     // Get current terminal name and set to desired mode.
     int status;
     char* current_tty;
+    int ttyfd;
     current_tty = ttyname(STDIN_FILENO);
     if(current_tty == NULL){
         fprintf(stderr, "Error: failed to get current tty name\n");
@@ -72,6 +73,7 @@ void context_init(struct Context* ctx, int mode){
 
     // Fill the context struct.
     ctx->fd = fd;
+    ctx->ttyfd = ttyfd;
     ctx->xres = xres;
     ctx->yres = yres;
     ctx->buffer_size = buffer_size;
@@ -95,7 +97,7 @@ void context_cleanup(struct Context* ctx){
     // Set mode back to text if it was not already. Unmap mapped memory
     // for both buffers and close the framebuffer pseudo file.
     int status;
-    status = ioctl(ttyfd, KDSETMODE, KD_TEXT);
+    status = ioctl(ctx->ttyfd, KDSETMODE, KD_TEXT);
     status = munmap(ctx->f_buffer, ctx->buffer_size);
     if(status == -1){
         fprintf(stderr, "Error: failed to unmap framebuffer memory\n");
