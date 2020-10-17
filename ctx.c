@@ -130,7 +130,7 @@ void plot_pixel(struct Context* ctx, int x, int y, uint color){
 }
 
 void fill_rect(struct Context* ctx, int x, int y, int w, int h, uint color){
-    int i, index;
+    int i;
     for(i = 0; i < h; i ++){
         draw_horizontal_line(ctx, x, y + i, w, color);
     }
@@ -156,5 +156,56 @@ void draw_vertical_line(struct Context* ctx, int x, int y, int l, uint color){
     for(i = 0; i < l; i ++){
         index = x + ((y + i) * ctx->xres);
         ctx->d_buffer[index] = color;
+    }
+}
+
+int image_init(struct Image* img, char* filename){
+
+    png_image image;
+    uint* img_data;
+    png_bytep b;
+    int i, k;
+
+    memset(&image, 0, sizeof(image));
+    image.version = PNG_IMAGE_VERSION;
+
+    if(png_image_begin_read_from_file(&image, filename) == 0){
+        return 1;
+    }
+    
+    image.format = PNG_FORMAT_ARGB;
+    b = malloc(PNG_IMAGE_SIZE(image));
+    png_image_finish_read(&image, NULL, b, 0, NULL);
+
+    img->w = image.width;
+    img->h = image.height;
+
+    img_data = malloc(sizeof(uint) * img->w * img->h);
+
+    // Condense array of uint8 to array of uint32.
+    for(k = 0; k < PNG_IMAGE_SIZE(image); k += 4){
+        uint pixel = (b[k]<<24) | (b[k+1]<<16) | (b[k+2]<<8) | (b[k+3]);
+        img_data[k / 4] = pixel;
+    }
+
+    img->data = img_data;
+
+    png_image_free(&image);
+    free(b);
+
+    return 0;
+}
+
+void image_cleanup(struct Image* img){
+    free(img->data);
+}
+
+void image_render(struct Context* ctx, struct Image* img, int x, int y){
+    int i, j, img_index, fb_index;
+    for(i = 0; i < img->h; i ++){
+        for(j = 0; j < img->w; j ++){
+            img_index = j + (i * img->w);
+            plot_pixel(ctx, x + j, y + i, img->data[img_index]);
+        }
     }
 }

@@ -56,7 +56,7 @@ int main(int argc, char** argv){
     sigaction(SIGABRT, &sa, NULL);
 
 
-    // Initialize.
+    // Initialize. KD_GRAPHICS for normal, KD_TEXT for valgrind.
     context_init(&ctx, KD_GRAPHICS);
     mouse_init(&mouse, &ctx, 100, 100);
     keyboard_init(&kb, &ctx);

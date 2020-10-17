@@ -11,6 +11,7 @@
 
 struct Mouse {
     int x, y, w, h, fd;
+    struct Image img;
     pthread_t thread_id;
     pthread_mutex_t mutex;
 };

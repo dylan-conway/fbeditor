@@ -6,8 +6,6 @@ void mouse_init(struct Mouse* m, struct Context* ctx, int x, int y){
     pthread_mutex_init(&m->mutex, NULL);
     m->x = x;
     m->y = y;
-    m->w = 100;
-    m->h = 100;
 
     char* event_file = find_event_file("B: EV=17");
     if(event_file == NULL){
@@ -23,9 +21,19 @@ void mouse_init(struct Mouse* m, struct Context* ctx, int x, int y){
         fprintf(stderr, "Error: failed to open mouse event file\n");
         exit(EXIT_FAILURE);
     }
+
+    if(image_init(&m->img, "images/cursor.png")){
+        context_cleanup(ctx);
+        fprintf(stderr, "Error: failed to create cursor image\n");
+        exit(EXIT_FAILURE);
+    }
+
+    m->w = m->img.w;
+    m->h = m->img.h;
 }
 
 void mouse_cleanup(struct Mouse* m){
+    image_cleanup(&m->img);
     close(m->fd);
     pthread_mutex_destroy(&m->mutex);
 }
@@ -35,10 +43,7 @@ void mouse_render(struct Context* ctx, struct Mouse* m){
     pthread_mutex_lock(&m->mutex);
     int x = m->x;
     int y = m->y;
-    int w = m->w;
-    int h = m->h;
-    fill_rect(ctx, x, y, w, h, 0xff0000);
-    draw_rect(ctx, x, y, w, h, 0xffffff);
+    image_render(ctx, &m->img, x, y);
     pthread_mutex_unlock(&m->mutex);
 }
 

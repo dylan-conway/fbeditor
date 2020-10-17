@@ -13,6 +13,9 @@
 #include <sys/ioctl.h>
 #include <linux/fb.h>
 #include <linux/kd.h>
+#include <png.h>
+
+#include "utils.h"
 
 #define uint64 unsigned long
 #define uint unsigned int
@@ -95,5 +98,16 @@ void draw_rect(struct Context* ctx, int x, int y, int w, int h, uint color);
 void draw_horizontal_line(struct Context* ctx, int x, int y, int l, uint color);
 
 void draw_vertical_line(struct Context* ctx, int x, int y, int l, uint color);
+
+struct Image {
+    uint* data;
+    int w, h;
+};
+
+int image_init(struct Image* img, char* filename);
+
+void image_cleanup(struct Image* img);
+
+void image_render(struct Context* ctx, struct Image* img, int x, int y);
 
 #endif
