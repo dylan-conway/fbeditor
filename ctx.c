@@ -115,7 +115,6 @@ void context_cleanup(struct Context* ctx){
     tcsetattr(STDIN_FILENO, TCSANOW, &ctx->original_term_settings);
 }
 
-
 void blit(struct Context* ctx){
     memcpy(ctx->f_buffer, ctx->d_buffer, ctx->buffer_size);
 }
@@ -125,8 +124,12 @@ void clear_screen(struct Context* ctx, uint color){
 }
 
 void plot_pixel(struct Context* ctx, int x, int y, uint color){
-    int index = x + (y * ctx->xres);
-    ctx->d_buffer[index] = color;
+    // If there is an alpha value other than 0, draw the color.
+    // As of right now, a transparent pixel has alpha value of 0x00.
+    if(color & 0xff000000){
+        int index = x + (y * ctx->xres);
+        ctx->d_buffer[index] = color;
+    }
 }
 
 void fill_rect(struct Context* ctx, int x, int y, int w, int h, uint color){
@@ -146,16 +149,14 @@ void draw_rect(struct Context* ctx, int x, int y, int w, int h, uint color){
 void draw_horizontal_line(struct Context* ctx, int x, int y, int l, uint color){
     int i, index;
     for(i = 0; i < l; i ++){
-        index = (x + i) + (y * ctx->xres);
-        ctx->d_buffer[index] = color;
+        plot_pixel(ctx, x + i, y, color);
     }
 }
 
 void draw_vertical_line(struct Context* ctx, int x, int y, int l, uint color){
     int i, index;
     for(i = 0; i < l; i ++){
-        index = x + ((y + i) * ctx->xres);
-        ctx->d_buffer[index] = color;
+        plot_pixel(ctx, x, y + i, color);
     }
 }
 
@@ -200,12 +201,26 @@ void image_cleanup(struct Image* img){
     free(img->data);
 }
 
-void image_render(struct Context* ctx, struct Image* img, int x, int y){
+void image_draw(struct Context* ctx, struct Image* img, int x, int y){
+
+    // The image data and context buffer are a long array, not 2d, so
+    // the indexneeds to be calculated for both.
     int i, j, img_index, fb_index;
     for(i = 0; i < img->h; i ++){
         for(j = 0; j < img->w; j ++){
             img_index = j + (i * img->w);
             plot_pixel(ctx, x + j, y + i, img->data[img_index]);
         }
+    }
+}
+
+void image_print(struct Image* img){
+    int i, j, index;
+    for(i = 0; i < img->h; i ++){
+        for(j = 0; j < img->w; j ++){
+            index = j + (i * img->w);
+            printf("%8x ", img->data[index]);
+        }
+        printf("\n");
     }
 }

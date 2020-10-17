@@ -30,6 +30,8 @@ void mouse_init(struct Mouse* m, struct Context* ctx, int x, int y){
 
     m->w = m->img.w;
     m->h = m->img.h;
+
+    image_print(&m->img);
 }
 
 void mouse_cleanup(struct Mouse* m){
@@ -39,11 +41,11 @@ void mouse_cleanup(struct Mouse* m){
 }
 
 // 60 fps
-void mouse_render(struct Context* ctx, struct Mouse* m){
+void mouse_draw(struct Context* ctx, struct Mouse* m){
     pthread_mutex_lock(&m->mutex);
     int x = m->x;
     int y = m->y;
-    image_render(ctx, &m->img, x, y);
+    image_draw(ctx, &m->img, x, y);
     pthread_mutex_unlock(&m->mutex);
 }
 

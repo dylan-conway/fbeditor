@@ -52,7 +52,7 @@ void context_cleanup(struct Context* ctx);
 
 /**
  * Transfers contents of the double buffer to the front buffer. Used to
- * update the entire buffer at the end of a render iteration.
+ * update the entire buffer at the end of a draw iteration.
  * @param ctx Contains framebuffer and terminal data.
  */
 void blit(struct Context* ctx);
@@ -95,19 +95,59 @@ void fill_rect(struct Context* ctx, int x, int y, int w, int h, uint color);
  */
 void draw_rect(struct Context* ctx, int x, int y, int w, int h, uint color);
 
+/**
+ * Draw a horizontal line on the screen in one color.
+ * @param ctx Framebuffer data.
+ * @param x Starting left of the line.
+ * @param y y coord.
+ * @param l The length of the line.
+ * @param color Color of the line.
+ */
 void draw_horizontal_line(struct Context* ctx, int x, int y, int l, uint color);
 
+/**
+ * Draw a vertical line in one color.
+ * @param ctx Framebuffer data.
+ * @param x x coord.
+ * @param y y coord.
+ * @param l Length of the line.
+ * @param color Color of the line.
+ */
 void draw_vertical_line(struct Context* ctx, int x, int y, int l, uint color);
 
+// Used to store data of an image to be drawn
+// in the framebuffer.
 struct Image {
     uint* data;
     int w, h;
 };
 
+/**
+ * Initializes an Image struct with the given filename.
+ * @param img Pass by reference Image struct.
+ * @param filename Path to png file.
+ */
 int image_init(struct Image* img, char* filename);
 
+/**
+ * Cleanup memory used by Image struct.
+ * @param img Pass by reference Image struct.
+ */
 void image_cleanup(struct Image* img);
 
-void image_render(struct Context* ctx, struct Image* img, int x, int y);
+/**
+ * Draw an image on the framebuffer.
+ * @param ctx Framebuffer data.
+ * @param img Image to draw.
+ * @param x Top left x coord.
+ * @param y Top left y coord.
+ */
+void image_draw(struct Context* ctx, struct Image* img, int x, int y);
+
+/**
+ * Print image to stdout. Useful for checking if image is read correctly.
+ * @param img Image to print.
+ */
+void image_print(struct Image* img);
 
 #endif

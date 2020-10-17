@@ -4,4 +4,5 @@
 - alpha support
 - animated sprites
 - mouse clicking
-- image loading before program gets to input loop
+- image loading before program gets to updates loop
+- vsync

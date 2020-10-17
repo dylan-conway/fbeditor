@@ -14,6 +14,7 @@ struct Context ctx;
 struct Mouse mouse;
 struct Keyboard kb;
 
+void output_setup();
 void* mouse_input(void* args);
 void* keyboard_input(void* args);
 
@@ -39,10 +40,16 @@ void sig_handler(int sig){
 
 int main(int argc, char** argv){
 
+
     if(getuid() != 0){
         fprintf(stderr, "Error: please run program as superuser\n");
         exit(EXIT_FAILURE);
     }
+
+
+    // Setup output file for debugging and errors.
+    output_setup();
+    
 
     // Set up signal handling for sudden stops of the
     // program. This is necessary because the terminal must
@@ -76,9 +83,9 @@ int main(int argc, char** argv){
         // Update
 
 
-        // Render
-        clear_screen(&ctx, 0x00000000);
-        mouse_render(&ctx, &mouse);
+        // Draw
+        clear_screen(&ctx, 0xffaaaaaa);
+        mouse_draw(&ctx, &mouse);
         blit(&ctx);
 
 
@@ -96,8 +103,14 @@ int main(int argc, char** argv){
     return 0;
 }
 
+void output_setup(){
+    int fd = open("output.txt", O_WRONLY | O_CREAT, 0666);
+    dup2(fd, STDOUT_FILENO);
+    dup2(fd, STDERR_FILENO);
+}
+
 // Mouse input thread. Mutex lock is needed for coordinates
-// because values might change during a render function
+// because values might change during a draw function
 // call resulting in misalignment.
 void* mouse_input(void* args){
 
