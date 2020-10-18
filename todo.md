@@ -6,3 +6,5 @@
 - mouse clicking
 - image loading before program gets to updates loop
 - vsync
+- font rendering
+
