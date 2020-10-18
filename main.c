@@ -84,6 +84,7 @@ int main(int argc, char** argv){
 
 
         // Draw
+        // ioctl(ctx.fd, FBIO_WAITFORVSYNC, ctx.f_buffer);
         clear_screen(&ctx, 0xffaaaaaa);
         mouse_draw(&ctx, &mouse);
         blit(&ctx);
@@ -124,8 +125,8 @@ void* mouse_input(void* args){
                     if(new_x < 0){
                         new_x = 0;
                     }
-                    if(new_x + mouse.w > ctx.xres - 1){
-                        new_x = ctx.xres - mouse.w - 1;
+                    if(new_x + mouse.w > ctx.xres){
+                        new_x = ctx.xres - mouse.w;
                     }
                     pthread_mutex_lock(&mouse.mutex);
                     mouse.x = new_x;
@@ -137,8 +138,8 @@ void* mouse_input(void* args){
                     if(new_y < 0){
                         new_y = 0;
                     }
-                    if(new_y + mouse.h > ctx.yres - 1){
-                        new_y = ctx.yres - mouse.h - 1;
+                    if(new_y + mouse.h > ctx.yres){
+                        new_y = ctx.yres - mouse.h;
                     }
                     pthread_mutex_lock(&mouse.mutex);
                     mouse.y = new_y;
