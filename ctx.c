@@ -85,6 +85,10 @@ void context_init(struct Context* ctx, int mode){
     ctx->f_buffer = f_buffer;
     ctx->d_buffer = d_buffer;
     ctx->original_term_settings = old_term;
+
+    // Ensure the buffers are initialized before rgba calculations.
+    clear_screen(ctx);
+    blit(ctx);
 }
 
 void context_cleanup(struct Context* ctx){
