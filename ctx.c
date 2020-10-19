@@ -123,8 +123,8 @@ void blit(struct Context* ctx){
     memcpy(ctx->f_buffer, ctx->d_buffer, ctx->buffer_size);
 }
 
-void clear_screen(struct Context* ctx, uint color){
-    memset(ctx->d_buffer, color, ctx->buffer_size);
+void clear_screen(struct Context* ctx){
+    memset(ctx->d_buffer, 0xffffffff, ctx->buffer_size);
 }
 
 void plot_pixel(struct Context* ctx, int x, int y, uint color){

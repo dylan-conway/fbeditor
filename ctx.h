@@ -58,11 +58,11 @@ void context_cleanup(struct Context* ctx);
 void blit(struct Context* ctx);
 
 /**
- * Clears the entire double buffer to one color.
+ * Clears the entire double buffer to white. Currently does not support
+ * any colors until another memset alternative is found.
  * @param ctx Contains framebuffer and terminal data.
- * @param color The color used to clear the screen.
  */
-void clear_screen(struct Context* ctx, uint color);
+void clear_screen(struct Context* ctx);
 
 /**
  * Colors a single pixel.

@@ -88,8 +88,7 @@ int main(int argc, char** argv){
 
 
         // Draw
-        // ioctl(ctx.fd, FBIO_WAITFORVSYNC, ctx.f_buffer);
-        clear_screen(&ctx, 0xffaaaaaa);
+        clear_screen(&ctx);
         mouse_draw(&ctx, &mouse);
         blit(&ctx);
 
