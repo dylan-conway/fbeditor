@@ -134,6 +134,22 @@ void plot_pixel(struct Context* ctx, int x, int y, uint color){
         int index = x + (y * ctx->xres);
         ctx->d_buffer[index] = color;
     }
+    // uint dst_color = ctx->d_buffer[index];
+    // uint src_color = color;
+    // uint8 dst_alpha = (0xff000000 & dst_color) >> 24;
+    // uint8 src_alpha = (0xff000000 & src_color) >> 24;
+    // dst_color = ctx->d_buffer[index] & (uint)0x00ffffff;
+    // src_color = color & (uint)0x00ffffff;
+    
+    // uint8 out_alpha = src_alpha + dst_alpha * ((uint8)0xff - src_alpha);
+
+    // if(src_alpha == 0x00000000){
+    //     ctx->d_buffer[index] = (uint)0x00000000;
+    // } else {
+    //     uint blended_color = ((src_color * src_alpha) + (dst_color * dst_alpha * ((uint8)0xff - src_alpha))) / out_alpha;
+    //     ctx->d_buffer[index] = blended_color;
+    // }
+
 }
 
 void fill_rect(struct Context* ctx, int x, int y, int w, int h, uint color){
@@ -209,7 +225,7 @@ void image_draw(struct Context* ctx, struct Image* img, int x, int y){
 
     // The image data and context buffer are a long array, not 2d, so
     // the indexneeds to be calculated for both.
-    int i, j, img_index, fb_index;
+    int i, j, img_index;
     for(i = 0; i < img->h; i ++){
         for(j = 0; j < img->w; j ++){
             img_index = j + (i * img->w);
@@ -219,6 +235,7 @@ void image_draw(struct Context* ctx, struct Image* img, int x, int y){
 }
 
 void image_print(struct Image* img){
+    printf("image print:\n");
     int i, j, index;
     for(i = 0; i < img->h; i ++){
         for(j = 0; j < img->w; j ++){
