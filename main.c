@@ -76,8 +76,12 @@ int main(int argc, char** argv){
 
     // Main loop. Update then render. Process input happens
     // in separate threads.
+    // int counter = 0;
     float ms_start, ms_finish;
     while(ctx.running){
+        // if(counter == 0){
+        //     ctx.running = 0;
+        // }
         ms_start = clock() * 1000.0 / CLOCKS_PER_SEC;
 
         // Update
@@ -93,6 +97,8 @@ int main(int argc, char** argv){
         do{
             ms_finish = clock() * 1000.0 / CLOCKS_PER_SEC;
         } while(ms_finish - ms_start < 16.67);
+
+        // counter ++;
     }
 
 
