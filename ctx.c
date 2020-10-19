@@ -44,7 +44,7 @@ void context_init(struct Context* ctx, int mode){
     fd = open("/dev/fb0", O_RDWR);
     if(fd == -1){
         fprintf(stderr, "Error: failed to open /dev/fb0\n");
-        context_cleanup(ctx);
+        context_free(ctx);
         exit(EXIT_FAILURE);
     }
 
@@ -91,7 +91,7 @@ void context_init(struct Context* ctx, int mode){
     blit(ctx);
 }
 
-void context_cleanup(struct Context* ctx){
+void context_free(struct Context* ctx){
     
     // In the case that one or more threads have been successfully
     // created but the program exits early, set running to 0 to exit
@@ -124,7 +124,7 @@ void blit(struct Context* ctx){
 }
 
 void clear_screen(struct Context* ctx){
-    memset(ctx->d_buffer, 0xffffffff, ctx->buffer_size);
+    memset(ctx->d_buffer, 0x00000000, ctx->buffer_size);
 }
 
 void plot_pixel(struct Context* ctx, int x, int y, uint color){
@@ -217,7 +217,7 @@ int image_init(struct Image* img, char* filename){
     return 0;
 }
 
-void image_cleanup(struct Image* img){
+void image_free(struct Image* img){
     free(img->data);
 }
 

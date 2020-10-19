@@ -11,6 +11,7 @@
 
 struct Mouse {
     int x, y, w, h, fd;
+    int left_button_down;
     struct Image img;
     pthread_t thread_id;
     pthread_mutex_t mutex;
@@ -29,7 +30,7 @@ void mouse_init(struct Mouse* m, struct Context* ctx, int x, int y);
  * Deallocate any memory in an initialized Mouse struct.
  * @param m Mouse to deallocate.
  */
-void mouse_cleanup(struct Mouse* m);
+void mouse_free(struct Mouse* m);
 
 /**
  * Draw Mouse struct to framebuffer.
@@ -46,6 +47,6 @@ struct Keyboard {
 
 void keyboard_init(struct Keyboard* kb, struct Context* ctx);
 
-void keyboard_cleanup(struct Keyboard* kb);
+void keyboard_free(struct Keyboard* kb);
 
 #endif

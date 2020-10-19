@@ -20,19 +20,19 @@ void* keyboard_input(void* args);
 
 void sig_handler(int sig){
     if(sig == SIGINT){
-        context_cleanup(&ctx);
+        context_free(&ctx);
         fprintf(stderr, "\nSIGINT\nexiting...\n\n");
         exit(EXIT_FAILURE);
     } else if(sig == SIGSEGV){
-        context_cleanup(&ctx);
+        context_free(&ctx);
         fprintf(stderr, "\nSIGSEGV\nexiting...\n\n");
         exit(EXIT_FAILURE);
     } else if(sig == SIGSTKFLT){
-        context_cleanup(&ctx);
+        context_free(&ctx);
         fprintf(stderr, "\nSIGSTKFLT\nexiting...\n\n");
         exit(EXIT_FAILURE);
     } else if(sig == SIGABRT){
-        context_cleanup(&ctx);
+        context_free(&ctx);
         fprintf(stderr, "\nSIGABRT\nexiting...\n\n");
         exit(EXIT_FAILURE);
     }
@@ -104,7 +104,7 @@ int main(int argc, char** argv){
     // Join input threads and cleanup context.
     pthread_join(mouse.thread_id, NULL);
     pthread_join(kb.thread_id, NULL);
-    context_cleanup(&ctx);
+    context_free(&ctx);
 
     return 0;
 }
@@ -156,7 +156,7 @@ void* mouse_input(void* args){
     }
 
     // Cleanup mouse struct before exit.
-    mouse_cleanup(&mouse);
+    mouse_free(&mouse);
     return NULL;
 }
 
@@ -191,6 +191,6 @@ void* keyboard_input(void* args){
     }
 
     // Cleanup keyboard struct before exit.
-    keyboard_cleanup(&kb);
+    keyboard_free(&kb);
     return NULL;
 }

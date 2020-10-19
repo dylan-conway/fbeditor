@@ -48,7 +48,7 @@ void context_init(struct Context* ctx, int mode);
  * for the framebuffer.
  * @param ctx Contains framebuffer and terminal data.
  */
-void context_cleanup(struct Context* ctx);
+void context_free(struct Context* ctx);
 
 /**
  * Transfers contents of the double buffer to the front buffer. Used to
@@ -133,7 +133,7 @@ int image_init(struct Image* img, char* filename);
  * Cleanup memory used by Image struct.
  * @param img Pass by reference Image struct.
  */
-void image_cleanup(struct Image* img);
+void image_free(struct Image* img);
 
 /**
  * Draw an image on the framebuffer.
@@ -149,5 +149,15 @@ void image_draw(struct Context* ctx, struct Image* img, int x, int y);
  * @param img Image to print.
  */
 void image_print(struct Image* img);
+
+struct DynamicSprite {
+    struct Image img;
+};
+
+void dynamic_sprite_init(struct DynamicSprite* ds, char* filename);
+
+void dynamic_sprite_free(struct DynamicSprite* ds);
+
+void dynamic_sprite_draw(struct DynamicSprite* ds);
 
 #endif
