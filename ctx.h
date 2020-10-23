@@ -62,7 +62,7 @@ void blit(struct Context* ctx);
  * any colors until another memset alternative is found.
  * @param ctx Contains framebuffer and terminal data.
  */
-void clear_screen(struct Context* ctx);
+void clear_screen(struct Context* ctx, uint color);
 
 /**
  * Colors a single pixel.

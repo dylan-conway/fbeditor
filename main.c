@@ -88,7 +88,7 @@ int main(int argc, char** argv){
 
 
         // Draw
-        clear_screen(&ctx);
+        clear_screen(&ctx, 0xff000000);
         mouse_draw(&ctx, &mouse);
         blit(&ctx);
 

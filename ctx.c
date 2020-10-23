@@ -87,7 +87,7 @@ void context_init(struct Context* ctx, int mode){
     ctx->original_term_settings = old_term;
 
     // Ensure the buffers are initialized before rgba calculations.
-    clear_screen(ctx);
+    clear_screen(ctx, 0xff000000);
     blit(ctx);
 }
 
@@ -123,8 +123,18 @@ void blit(struct Context* ctx){
     memcpy(ctx->f_buffer, ctx->d_buffer, ctx->buffer_size);
 }
 
-void clear_screen(struct Context* ctx){
-    memset(ctx->d_buffer, 0x00000000, ctx->buffer_size);
+void clear_screen(struct Context* ctx, uint color){
+    uint i;
+    int x = 0;
+    int y = 0;
+    for(i = 0; i < ctx->buffer_size / ctx->bytes_per_pixel; i ++){
+        if(i == ctx->xres){
+            x == 0;
+            y ++;
+        }
+        plot_pixel(ctx, x, y, color);
+        x ++;
+    }
 }
 
 void plot_pixel(struct Context* ctx, int x, int y, uint color){
