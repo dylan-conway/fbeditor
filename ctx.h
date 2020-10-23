@@ -24,15 +24,19 @@
 
 // Contains framebuffer and terminal data.
 struct Context {
-    int fd, ttyfd, xres, yres;
-    int buffer_size;
-    int running;
+    int fd;             // File descriptor of framebuffer pseudo file
+    int ttyfd;          // File descriptor of terminal
+    int xres;           // Number of pixels for width
+    int yres;           // Number of pixels for height
+    int buffer_size;    // Size of buffer in bytes
+    int running;        // Running flag for program
     int bits_per_pixel;
     int bytes_per_pixel;
-    unsigned int* f_buffer;
-    unsigned int* d_buffer;
-    struct fb_var_screeninfo vinfo;
-    struct fb_fix_screeninfo finfo;
+    unsigned int* f_buffer;             // Framebuffer. Visible on the screen
+    unsigned int* d_buffer;             // Double buffer
+    struct fb_var_screeninfo vinfo;     // Variable screen info
+    struct fb_fix_screeninfo finfo;     // Fixed screen info
+    // Setting of the terminal as program started
     struct termios original_term_settings;
 };
 
